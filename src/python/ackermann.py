@@ -3,6 +3,10 @@ import sys
 
 sys.setrecursionlimit(10000)
 
+# zero is the 0 the compiled forms read so no compiler folds a round, see
+# README.md. It costs the same read here.
+zero = 0
+
 
 def ackermann(m, n):
     if m == 0:
@@ -16,7 +20,7 @@ def make(fnv, offset):
     def run(size):
         h, ok = offset, True
         for _ in range(size):
-            r = ackermann(3, 5)
+            r = ackermann(3, 5 + zero)
             h = fnv(h, r)
             ok = ok and r == 253
         return h, ok

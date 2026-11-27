@@ -15,7 +15,7 @@ image() {
 form_cmd() {
 	local file built
 	file=$(cx_sized "$1" "$2" "$OUT/cx-sized") || return 1
-	built=$(image "$file" "$OUT/cx-image/$LAYOUT/$1-$2.cximage") || return 1
+	built=$(image "$file" "$OUT/cx-image/$LAYOUT/$(basename "$file" .cx).cximage") || return 1
 	printf '%s\n' "$OUT/cx-tools/$LAYOUT/cx-core-image" "$built"
 }
 form_cmd_empty() {

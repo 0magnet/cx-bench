@@ -29,8 +29,12 @@ bench_name() {
 
 # cx_sized writes the CX program $1 with its size set to $2 into dir $3 and
 # prints the path. The vm subset of CX reads no arguments, see README.md.
+# The name holds a hash of the source and the cx revision, so what is built
+# from it is rebuilt when either changes.
 cx_sized() {
-	local file=$3/$1-$2.cx
+	local key file
+	key=$(cat "$ROOT/src/cx/$1.cx" "$OUT/cx-tools/rev.txt" 2>/dev/null | sha256sum | cut -c1-12)
+	file=$3/$1-$2-$key.cx
 	mkdir -p "$3"
 	if [[ ! -f $file ]]; then
 		sed "s/^var benchSize i32 = 1\$/var benchSize i32 = $2/" "$ROOT/src/cx/$1.cx" >"$file.tmp"

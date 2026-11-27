@@ -1,4 +1,8 @@
 -- n! for n 0 to 20 by recursion once per round, in uint64_t cdata.
+-- zero is the 0 the compiled forms read so no compiler folds a round, see
+-- README.md. It costs the same read here.
+local zero = 0
+
 return function(fnv, offset)
 	local function factorial(n)
 		if n == 0 then
@@ -10,7 +14,7 @@ return function(fnv, offset)
 		local h, ok = offset, true
 		for _ = 1, size do
 			local f = 0
-			for n = 0, 20 do
+			for n = 0, 20 + zero do
 				f = factorial(n)
 				h = fnv(h, f)
 			end

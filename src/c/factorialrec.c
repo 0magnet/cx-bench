@@ -11,8 +11,8 @@ uint64_t bench_factorialrec(int64_t size, int *pass) {
 	uint64_t hash = FNV_OFFSET;
 	int ok = 1;
 	for (int64_t round = 0; round < size; round++) {
-		uint64_t factorial = 0;
-		for (uint64_t n = 0; n <= 20; n++) {
+		uint64_t factorial = 0, top = 20 + (uint64_t)bench_zero;
+		for (uint64_t n = 0; n <= top; n++) {
 			factorial = factorial_recursive(n);
 			hash = fnv(hash, factorial);
 		}

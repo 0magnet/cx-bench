@@ -1,5 +1,9 @@
 """Walks 100 points, objects of two fields, once per round."""
 
+# zero is the 0 the compiled forms read so no compiler folds a round, see
+# README.md. It costs the same read here.
+zero = 0
+
 
 class Point:
     __slots__ = ("horizontal", "vertical")
@@ -15,7 +19,7 @@ def make(fnv, offset):
         points = [Point(i, 2 * i) for i in range(100)]
         for _ in range(size):
             total = 0
-            for i in range(100):
+            for i in range(100 + zero):
                 p = points[i]
                 total = total + p.horizontal + p.vertical
             h = fnv(h, total)

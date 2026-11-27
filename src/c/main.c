@@ -35,6 +35,8 @@ static const struct {
    for the second. */
 static volatile int64_t bench_size;
 
+volatile int32_t bench_zero = 0;
+
 static void marker(char phase) {
 	fputc(phase, stderr);
 	fflush(stderr);

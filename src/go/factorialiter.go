@@ -15,7 +15,8 @@ func benchFactorialIter(size int) (uint64, bool) {
 	pass := true
 	for round := 0; round < size; round++ {
 		var factorial uint64
-		for n := uint64(0); n <= 20; n++ {
+		top := 20 + uint64(zero())
+		for n := uint64(0); n <= top; n++ {
 			factorial = factorialLoop(n)
 			hash = fnv(hash, factorial)
 		}

@@ -6,11 +6,16 @@ package main
 // so run.sh writes the size here before it runs or builds the program.
 var benchSize i32 = 1
 
+// benchZero is the 0 the other compiled forms read so no compiler folds a
+// round, see README.md.
+var benchZero i32 = 0
+
 func fnv(h ui64, v ui64) (out ui64) {
 	out = (h ^ v) * 1099511628211UL
 }
 
 func run(size i32) (h ui64, ok bool) {
+	global benchZero
 	h = 14695981039346656037UL
 	ok = true
 	var sum i64
@@ -19,7 +24,7 @@ func run(size i32) (h ui64, ok bool) {
 	for round = 0; round < size; round++ {
 		sum = 0L
 		for i = 0; i < 1000000; i++ {
-			sum = sum + i32.i64(i)
+			sum = sum + i32.i64(i+benchZero)
 		}
 		h = fnv(h, i64.ui64(sum))
 		ok = ok && sum == 499999500000L

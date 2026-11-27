@@ -11,7 +11,7 @@ uint64_t bench_fib(int64_t size, int *pass) {
 	uint64_t hash = FNV_OFFSET;
 	int ok = 1;
 	for (int64_t round = 0; round < size; round++) {
-		int32_t result = fib_recursive(25);
+		int32_t result = fib_recursive(25 + bench_zero);
 		hash = fnv(hash, (uint64_t)result);
 		ok = ok && result == 75025;
 	}

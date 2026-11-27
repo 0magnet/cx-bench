@@ -12,7 +12,7 @@ func benchFib(size int) (uint64, bool) {
 	hash := uint64(fnvOffset)
 	pass := true
 	for round := 0; round < size; round++ {
-		result := fibRecursive(25)
+		result := fibRecursive(25 + zero())
 		hash = fnv(hash, uint64(result))
 		pass = pass && result == 75025
 	}

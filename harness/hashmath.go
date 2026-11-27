@@ -65,8 +65,9 @@ func hashRound(bench string, round uint64) []uint64 {
 		// sum of c + round and 3c for c below 100,000.
 		return []uint64{4*99999*100000/2 + 100000*round}
 	case "structserialize":
-		// round + 2 round + sum of 16 round + k for k below 16.
-		return []uint64{259*round + 120}
+		// value + 2 value + sum of 16 value + k for k below 16, value the
+		// round mod 2^20.
+		return []uint64{259*(round&1048575) + 120}
 	}
 	return nil
 }

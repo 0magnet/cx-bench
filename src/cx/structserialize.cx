@@ -2,7 +2,7 @@ package main
 
 // Encodes a point and a struct of 16 i32 into a 72 byte little endian buffer
 // and decodes them back once per round. CX has no struct serializer, so the
-// encoding is written out by hand. The values depend on the round.
+// encoding is written out by hand. The values depend on the round mod 2^20.
 
 // benchSize is the number of rounds. The vm subset of CX reads no arguments,
 // so run.sh writes the size here before it runs or builds the program.
@@ -45,12 +45,14 @@ func run(size i32) (h ui64, ok bool) {
 	var valuesDecoded numbers
 	var sum i64
 	var k i32
+	var value i32
 	var round i32
 	for round = 0; round < size; round++ {
-		p.horizontal = round
-		p.vertical = 2 * round
+		value = round & 1048575
+		p.horizontal = value
+		p.vertical = 2 * value
 		for k = 0; k < 16; k++ {
-			values.ints[k] = 16*round + k
+			values.ints[k] = 16*value + k
 		}
 		encode(0, p.horizontal)
 		encode(4, p.vertical)
@@ -67,7 +69,7 @@ func run(size i32) (h ui64, ok bool) {
 			sum = sum + i32.i64(valuesDecoded.ints[k])
 		}
 		h = fnv(h, i64.ui64(sum))
-		ok = ok && sum == 259L*i32.i64(round)+120L
+		ok = ok && sum == 259L*i32.i64(value)+120L
 	}
 }
 

@@ -1,5 +1,5 @@
 -- Encodes a point and 16 int32 into a 72 byte little endian buffer and
--- decodes them back once per round. The values depend on the round. The
+-- decodes them back once per round. The values depend on the round mod 2^20. The
 -- bit library returns signed 32 bit values, as decode needs.
 local bit = require("bit")
 
@@ -23,10 +23,11 @@ return function(fnv, offset)
 		local point, decoded = { horizontal = 0, vertical = 0 }, { horizontal = 0, vertical = 0 }
 		local ints, decodedInts = {}, {}
 		for round = 0, size - 1 do
-			point.horizontal = round
-			point.vertical = 2 * round
+			local value = bit.band(round, 1048575)
+			point.horizontal = value
+			point.vertical = 2 * value
 			for k = 0, 15 do
-				ints[k] = 16 * round + k
+				ints[k] = 16 * value + k
 			end
 			encode(0, point.horizontal)
 			encode(4, point.vertical)
@@ -43,7 +44,7 @@ return function(fnv, offset)
 				sum = sum + decodedInts[k]
 			end
 			h = fnv(h, sum)
-			ok = ok and sum == 259 * round + 120
+			ok = ok and sum == 259 * value + 120
 		end
 		return h, ok
 	end

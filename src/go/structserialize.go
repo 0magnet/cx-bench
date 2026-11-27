@@ -21,17 +21,18 @@ func serializeDecode(at int32) int32 {
 
 // benchStructSerialize encodes a point and a struct of 16 int32 into a 72
 // byte little endian buffer and decodes them back once per round. The
-// values depend on the round number.
+// values depend on the round number mod 2^20, so 16 times it fits an int32.
 func benchStructSerialize(size int) (uint64, bool) {
 	hash := uint64(fnvOffset)
 	pass := true
 	var p, decoded point
 	var values, valuesDecoded numbers
 	for round := int32(0); round < int32(size); round++ {
-		p.horizontal = round
-		p.vertical = 2 * round
+		value := round & 1048575
+		p.horizontal = value
+		p.vertical = 2 * value
 		for k := int32(0); k < 16; k++ {
-			values.ints[k] = 16*round + k
+			values.ints[k] = 16*value + k
 		}
 		serializeEncode(0, p.horizontal)
 		serializeEncode(4, p.vertical)
@@ -48,7 +49,7 @@ func benchStructSerialize(size int) (uint64, bool) {
 			sum += int64(valuesDecoded.ints[k])
 		}
 		hash = fnv(hash, uint64(sum))
-		pass = pass && sum == 259*int64(round)+120
+		pass = pass && sum == 259*int64(value)+120
 	}
 	return hash, pass
 }

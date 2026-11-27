@@ -1,0 +1,43 @@
+package main
+
+// Sums 0 to 999,999 into an i64 once per round.
+
+// benchSize is the number of rounds. The vm subset of CX reads no arguments,
+// so run.sh writes the size here before it runs or builds the program.
+var benchSize i32 = 1
+
+func fnv(h ui64, v ui64) (out ui64) {
+	out = (h ^ v) * 1099511628211UL
+}
+
+func run(size i32) (h ui64, ok bool) {
+	h = 14695981039346656037UL
+	ok = true
+	var sum i64
+	var i i32
+	var round i32
+	for round = 0; round < size; round++ {
+		sum = 0L
+		for i = 0; i < 1000000; i++ {
+			sum = sum + i32.i64(i)
+		}
+		h = fnv(h, i64.ui64(sum))
+		ok = ok && sum == 499999500000L
+	}
+}
+
+func main() {
+	global benchSize
+	var h1 ui64
+	var h2 ui64
+	var ok1 bool
+	var ok2 bool
+	h1, ok1 = run(benchSize)
+	h2, ok2 = run(benchSize)
+	ui64.print(h1)
+	if ok1 && ok2 && h1 == h2 {
+		printf("count pass\n")
+	} else {
+		printf("count FAIL\n")
+	}
+}

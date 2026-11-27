@@ -1,0 +1,6 @@
+package main
+
+// The empty program, for the start up time.
+
+func main() {
+}

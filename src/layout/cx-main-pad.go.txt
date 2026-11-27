@@ -1,0 +1,14 @@
+package main
+
+import (
+	"os"
+
+	vm "github.com/skycoin/skycoin-cx/t3-cx-runtime-vm"
+)
+
+var layoutPadKeep = func() int {
+	if len(os.Args) > 99 {
+		println(vm.LayoutPad(nil))
+	}
+	return 0
+}()

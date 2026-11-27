@@ -1,0 +1,21 @@
+-- n! for n 0 to 20 by recursion once per round, in uint64_t cdata.
+return function(fnv, offset)
+	local function factorial(n)
+		if n == 0 then
+			return 1ULL
+		end
+		return n * factorial(n - 1)
+	end
+	return function(size)
+		local h, ok = offset, true
+		for _ = 1, size do
+			local f = 0
+			for n = 0, 20 do
+				f = factorial(n)
+				h = fnv(h, f)
+			end
+			ok = ok and f == 2432902008176640000ULL
+		end
+		return h, ok
+	end
+end

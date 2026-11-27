@@ -1,6 +1,6 @@
 # go
 
-Go, src/go built with the gc compiler. LAYOUT=b compiles src/layout/aaa_pad.go.txt first, which moves the code. The Go form is the reference that expected.txt is generated from.
+Go, src/go built with the gc compiler. LAYOUT=b compiles src/layout/aaa_pad.go.txt first, which moves the code.
 
 ## Install
 

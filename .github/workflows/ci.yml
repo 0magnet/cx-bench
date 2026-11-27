@@ -36,7 +36,7 @@ jobs:
         run: ./precheck.sh harness c go lua luajit gopher-lua python cx-vm cx-image cx-llvm
       - name: vet
         run: |
-          (cd harness && go vet ./...)
+          (cd harness && go vet ./... && go test ./...)
           (cd src/go && go vet ./...)
           (cd gopher-lua/runner && go vet ./...)
       - name: shellcheck

@@ -15,8 +15,6 @@ all) names="c go tinygo lua luajit gopher-lua python cx-vm cx-image cx-llvm c-wa
 esac
 OUT=${2:-results/$(date +%F)}
 ./precheck.sh harness go $names
-# The Go form is the reference expected.txt is generated from.
-go/build.sh
 for form in $names; do
 	echo "== build $form"
 	"$form/build.sh"

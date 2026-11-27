@@ -6,7 +6,7 @@
 //	harness verify  [-forms f,g] [-size N]          hashes, markers and server mode
 //	harness measure [-forms f,g] -out results/DATE  sizing, runs, sweep, layout, server
 //	harness report  -in results/DATE                results.md and chart.png
-//	harness expected [-in results/DATE]             rewrite expected.txt from the Go form
+//	harness expected [-in results/DATE]             add sizes to expected.txt, from the math
 package main
 
 import (

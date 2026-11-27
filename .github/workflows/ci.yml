@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Builds every form whose tools install cheaply from apt and checks that
+# each benchmark prints the hash of expected.txt, the phase markers in order
+# and the same hash in server mode. No timing: a shared runner is no place
+# for it.
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version: "1.27.x"
+          cache-dependency-path: "**/go.sum"
+      - name: install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang lua5.4 luajit python3
+      - name: precheck
+        run: ./precheck.sh harness c go lua luajit gopher-lua python cx-vm cx-image cx-llvm
+      - name: vet
+        run: |
+          (cd harness && go vet ./...)
+          (cd src/go && go vet ./...)
+          (cd gopher-lua/runner && go vet ./...)
+      - name: shellcheck
+        run: shellcheck -x -S warning precheck.sh run-all.sh src/*.sh src/wasi/cc.sh */build.sh */run.sh */profile.sh cx-llvm/clang-pad.sh
+      - name: build
+        run: for form in go c lua luajit gopher-lua python cx-vm cx-image cx-llvm; do "$form/build.sh"; done
+      - name: verify
+        run: |
+          (cd harness && go build -o ../out/harness .)
+          out/harness verify -forms c,go,lua,luajit,gopher-lua,python,cx-vm,cx-image,cx-llvm

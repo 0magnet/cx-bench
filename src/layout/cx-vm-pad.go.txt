@@ -1,0 +1,14 @@
+package vm
+
+// LayoutPad shifts the code after it, for the layout b build of cx only.
+
+//go:noinline
+func LayoutPad(x []uint64) uint64 {
+	var s uint64
+	for i := range x {
+		s += x[i]*2654435761 ^ (s >> 7)
+		s ^= s << 13
+		s += s >> 3
+	}
+	return s + 17
+}

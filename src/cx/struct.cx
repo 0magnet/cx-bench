@@ -1,0 +1,55 @@
+package main
+
+// Walks a [100]point through a pointer once per round.
+
+// benchSize is the number of rounds. The vm subset of CX reads no arguments,
+// so run.sh writes the size here before it runs or builds the program.
+var benchSize i32 = 1
+
+func fnv(h ui64, v ui64) (out ui64) {
+	out = (h ^ v) * 1099511628211UL
+}
+
+type point struct {
+	horizontal i32
+	vertical   i32
+}
+
+func run(size i32) (h ui64, ok bool) {
+	h = 14695981039346656037UL
+	ok = true
+	var points [100]point
+	var i i32
+	for i = 0; i < 100; i++ {
+		points[i].horizontal = i
+		points[i].vertical = 2 * i
+	}
+	var sum i32
+	var p *point
+	var round i32
+	for round = 0; round < size; round++ {
+		sum = 0
+		for i = 0; i < 100; i++ {
+			p = &points[i]
+			sum = sum + p.horizontal + p.vertical
+		}
+		h = fnv(h, i32.ui64(sum))
+		ok = ok && sum == 14850
+	}
+}
+
+func main() {
+	global benchSize
+	var h1 ui64
+	var h2 ui64
+	var ok1 bool
+	var ok2 bool
+	h1, ok1 = run(benchSize)
+	h2, ok2 = run(benchSize)
+	ui64.print(h1)
+	if ok1 && ok2 && h1 == h2 {
+		printf("struct pass\n")
+	} else {
+		printf("struct FAIL\n")
+	}
+}

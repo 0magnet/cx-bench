@@ -1,0 +1,88 @@
+package main
+
+// Encodes a point and a struct of 16 i32 into a 72 byte little endian buffer
+// and decodes them back once per round. CX has no struct serializer, so the
+// encoding is written out by hand. The values depend on the round.
+
+// benchSize is the number of rounds. The vm subset of CX reads no arguments,
+// so run.sh writes the size here before it runs or builds the program.
+var benchSize i32 = 1
+
+func fnv(h ui64, v ui64) (out ui64) {
+	out = (h ^ v) * 1099511628211UL
+}
+
+type point struct {
+	horizontal i32
+	vertical   i32
+}
+
+type numbers struct {
+	ints [16]i32
+}
+
+var buffer [72]ui8
+
+func encode(at i32, value i32) {
+	global buffer
+	buffer[at] = i32.ui8(value & 255)
+	buffer[at+1] = i32.ui8((value >> 8) & 255)
+	buffer[at+2] = i32.ui8((value >> 16) & 255)
+	buffer[at+3] = i32.ui8((value >> 24) & 255)
+}
+
+func decode(at i32) (out i32) {
+	global buffer
+	out = ui8.i32(buffer[at]) | ui8.i32(buffer[at+1])<<8 | ui8.i32(buffer[at+2])<<16 | ui8.i32(buffer[at+3])<<24
+}
+
+func run(size i32) (h ui64, ok bool) {
+	h = 14695981039346656037UL
+	ok = true
+	var p point
+	var decoded point
+	var values numbers
+	var valuesDecoded numbers
+	var sum i64
+	var k i32
+	var round i32
+	for round = 0; round < size; round++ {
+		p.horizontal = round
+		p.vertical = 2 * round
+		for k = 0; k < 16; k++ {
+			values.ints[k] = 16*round + k
+		}
+		encode(0, p.horizontal)
+		encode(4, p.vertical)
+		for k = 0; k < 16; k++ {
+			encode(8+4*k, values.ints[k])
+		}
+		decoded.horizontal = decode(0)
+		decoded.vertical = decode(4)
+		for k = 0; k < 16; k++ {
+			valuesDecoded.ints[k] = decode(8 + 4*k)
+		}
+		sum = i32.i64(decoded.horizontal) + i32.i64(decoded.vertical)
+		for k = 0; k < 16; k++ {
+			sum = sum + i32.i64(valuesDecoded.ints[k])
+		}
+		h = fnv(h, i64.ui64(sum))
+		ok = ok && sum == 259L*i32.i64(round)+120L
+	}
+}
+
+func main() {
+	global benchSize
+	var h1 ui64
+	var h2 ui64
+	var ok1 bool
+	var ok2 bool
+	h1, ok1 = run(benchSize)
+	h2, ok2 = run(benchSize)
+	ui64.print(h1)
+	if ok1 && ok2 && h1 == h2 {
+		printf("structserialize pass\n")
+	} else {
+		printf("structserialize FAIL\n")
+	}
+}

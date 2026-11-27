@@ -1,0 +1,56 @@
+package main
+
+// Fills and reads a struct of two 100,000 element arrays once per round.
+// The fill depends on the round number.
+
+// benchSize is the number of rounds. The vm subset of CX reads no arguments,
+// so run.sh writes the size here before it runs or builds the program.
+var benchSize i32 = 1
+
+func fnv(h ui64, v ui64) (out ui64) {
+	out = (h ^ v) * 1099511628211UL
+}
+
+type arrays struct {
+	int32s [100000]i32
+	int64s [100000]i64
+}
+
+var structsArrays arrays
+
+func run(size i32) (h ui64, ok bool) {
+	global structsArrays
+	h = 14695981039346656037UL
+	ok = true
+	var sum i64
+	var c i32
+	var round i32
+	for round = 0; round < size; round++ {
+		for c = 0; c < 100000; c++ {
+			structsArrays.int32s[c] = c + round
+			structsArrays.int64s[c] = i32.i64(c) * 3L
+		}
+		sum = 0L
+		for c = 0; c < 100000; c++ {
+			sum = sum + i32.i64(structsArrays.int32s[c]) + structsArrays.int64s[c]
+		}
+		h = fnv(h, i64.ui64(sum))
+		ok = ok && sum == 19999800000L+100000L*i32.i64(round)
+	}
+}
+
+func main() {
+	global benchSize
+	var h1 ui64
+	var h2 ui64
+	var ok1 bool
+	var ok2 bool
+	h1, ok1 = run(benchSize)
+	h2, ok2 = run(benchSize)
+	ui64.print(h1)
+	if ok1 && ok2 && h1 == h2 {
+		printf("structs pass\n")
+	} else {
+		printf("structs FAIL\n")
+	}
+}

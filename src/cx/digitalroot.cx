@@ -1,0 +1,56 @@
+package main
+
+// The digital root and additive persistence, base 10, of every n from 1 to
+// 99,999 once per round. Each n folds root + 10 * persistence.
+
+// benchSize is the number of rounds. The vm subset of CX reads no arguments,
+// so run.sh writes the size here before it runs or builds the program.
+var benchSize i32 = 1
+
+func fnv(h ui64, v ui64) (out ui64) {
+	out = (h ^ v) * 1099511628211UL
+}
+
+func digitSum(n i32) (out i32) {
+	out = 0
+	for ; n > 0; n = n / 10 {
+		out = out + n%10
+	}
+}
+
+func run(size i32) (h ui64, ok bool) {
+	h = 14695981039346656037UL
+	ok = true
+	var n i32
+	var root i32
+	var persistence i32
+	var round i32
+	for round = 0; round < size; round++ {
+		for n = 1; n < 100000; n++ {
+			root = n
+			persistence = 0
+			for root >= 10 {
+				root = digitSum(root)
+				persistence++
+			}
+			h = fnv(h, i32.ui64(root+10*persistence))
+			ok = ok && root == 1+(n-1)%9
+		}
+	}
+}
+
+func main() {
+	global benchSize
+	var h1 ui64
+	var h2 ui64
+	var ok1 bool
+	var ok2 bool
+	h1, ok1 = run(benchSize)
+	h2, ok2 = run(benchSize)
+	ui64.print(h1)
+	if ok1 && ok2 && h1 == h2 {
+		printf("digitalroot pass\n")
+	} else {
+		printf("digitalroot FAIL\n")
+	}
+}

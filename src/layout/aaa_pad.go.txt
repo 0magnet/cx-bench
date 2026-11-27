@@ -1,0 +1,24 @@
+package main
+
+import "os"
+
+// layoutPad is compiled first in the layout b builds of the Go and TinyGo
+// forms, so the code after it lands at another address.
+//
+//go:noinline
+func layoutPad(x []uint64) uint64 {
+	var s uint64
+	for i := range x {
+		s += x[i]*2654435761 ^ (s >> 7)
+		s ^= s << 13
+		s += s >> 3
+	}
+	return s + 17
+}
+
+var layoutPadKeep = func() int {
+	if len(os.Args) > 99 {
+		println(layoutPad(nil))
+	}
+	return 0
+}()

@@ -1,0 +1,47 @@
+package main
+
+// Recursive fib(25), 242,785 calls, once per round.
+
+// benchSize is the number of rounds. The vm subset of CX reads no arguments,
+// so run.sh writes the size here before it runs or builds the program.
+var benchSize i32 = 1
+
+func fnv(h ui64, v ui64) (out ui64) {
+	out = (h ^ v) * 1099511628211UL
+}
+
+func fib(n i32) (out i32) {
+	if n < 2 {
+		out = n
+	} else {
+		out = fib(n-1) + fib(n-2)
+	}
+}
+
+func run(size i32) (h ui64, ok bool) {
+	h = 14695981039346656037UL
+	ok = true
+	var r i32
+	var round i32
+	for round = 0; round < size; round++ {
+		r = fib(25)
+		h = fnv(h, i32.ui64(r))
+		ok = ok && r == 75025
+	}
+}
+
+func main() {
+	global benchSize
+	var h1 ui64
+	var h2 ui64
+	var ok1 bool
+	var ok2 bool
+	h1, ok1 = run(benchSize)
+	h2, ok2 = run(benchSize)
+	ui64.print(h1)
+	if ok1 && ok2 && h1 == h2 {
+		printf("fib pass\n")
+	} else {
+		printf("fib FAIL\n")
+	}
+}

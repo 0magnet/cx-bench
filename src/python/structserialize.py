@@ -1,5 +1,5 @@
 """Encodes a point and 16 int32 into a 72 byte little endian buffer and
-decodes them back once per round. The values depend on the round."""
+decodes them back once per round. The values depend on the round mod 2^20."""
 
 
 def make(fnv, offset):
@@ -19,9 +19,10 @@ def make(fnv, offset):
         h, ok = offset, True
         ints, decoded_ints = [0] * 16, [0] * 16
         for round_number in range(size):
-            horizontal, vertical = round_number, 2 * round_number
+            value = round_number & 1048575
+            horizontal, vertical = value, 2 * value
             for k in range(16):
-                ints[k] = 16 * round_number + k
+                ints[k] = 16 * value + k
             encode(0, horizontal)
             encode(4, vertical)
             for k in range(16):
@@ -34,6 +35,6 @@ def make(fnv, offset):
             for k in range(16):
                 total += decoded_ints[k]
             h = fnv(h, total)
-            ok = ok and total == 259 * round_number + 120
+            ok = ok and total == 259 * value + 120
         return h, ok
     return run

@@ -14,16 +14,17 @@ static int32_t serialize_decode(int32_t at) {
 }
 
 /* Encodes a point and 16 int32 into a 72 byte little endian buffer and
-   decodes them back once per round. The values depend on the round. */
+   decodes them back once per round. The values depend on the round mod 2^20. */
 uint64_t bench_structserialize(int64_t size, int *pass) {
 	uint64_t hash = FNV_OFFSET;
 	int ok = 1;
 	int32_t horizontal, vertical, ints[16], decoded[16];
 	for (int32_t round = 0; round < (int32_t)size; round++) {
-		horizontal = round;
-		vertical = 2 * round;
+		int32_t value = round & 1048575;
+		horizontal = value;
+		vertical = 2 * value;
 		for (int32_t k = 0; k < 16; k++)
-			ints[k] = 16 * round + k;
+			ints[k] = 16 * value + k;
 		serialize_encode(0, horizontal);
 		serialize_encode(4, vertical);
 		for (int32_t k = 0; k < 16; k++)
@@ -36,7 +37,7 @@ uint64_t bench_structserialize(int64_t size, int *pass) {
 		for (int k = 0; k < 16; k++)
 			sum += decoded[k];
 		hash = fnv(hash, (uint64_t)sum);
-		ok = ok && sum == 259LL * round + 120;
+		ok = ok && sum == 259LL * value + 120;
 	}
 	*pass = ok;
 	return hash;

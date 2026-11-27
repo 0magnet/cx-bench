@@ -176,8 +176,10 @@ For each form and benchmark:
 
 1. The empty program runs ten times. Its median whole run is the start up.
 2. Sizing: the size grows from 1 until one run takes at least 2 s and at
-   least 100 times the start up. A slow form stops at a small size, a fast
-   one at a large size, so each runs about the same time.
+   least 100 times the start up, but at most 10 s (`-max`): node with
+   `--no-liftoff` compiles a whole Go module before it starts, so 100 times
+   its start up would be minutes a run. A slow form stops at a small size,
+   a fast one at a large size, so each runs about the same time.
 3. Five timed runs at that size.
 4. The size sweep: one run each at size/8, size/4 and size/2.
 5. Code placement, for the forms with two layouts (c, go, tinygo, cx-vm,
@@ -208,7 +210,9 @@ sequential, never in parallel.
 
 The first results are in
 [results/2026-11-27](results/2026-11-27/results.md), with a summary in
-[notes.md](results/2026-11-27/notes.md).
+[notes.md](results/2026-11-27/notes.md). The wasm forms under node are in
+[results/2026-11-27-wasm](results/2026-11-27-wasm/results.md) with their
+[notes.md](results/2026-11-27-wasm/notes.md).
 
 ## CI
 

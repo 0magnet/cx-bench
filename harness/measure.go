@@ -17,6 +17,7 @@ type measureSettings struct {
 	runs      int
 	minimum   time.Duration
 	startupX  int
+	maximum   time.Duration
 	benches   []string
 	sizeLimit int
 }
@@ -31,16 +32,19 @@ func measureCommand(root string, args []string) error {
 	runs := flags.Int("runs", 5, "timed runs per benchmark and layout")
 	minimum := flags.Duration("min", 2*time.Second, "shortest run")
 	startupX := flags.Int("startup", 100, "shortest run in multiples of the empty program")
+	maximum := flags.Duration("max", 10*time.Second, "longest target run, for forms whose start up is long")
+	skip := flags.String("skip", "", "form labels to leave out, comma separated, lua/5.4 for example")
 	benchList := flags.String("benches", strings.Join(benchNames, ","), "benchmarks, comma separated")
 	flags.Parse(args)
 	if *out == "" {
 		*out = filepath.Join(root, "results", time.Now().Format("2006-01-02"))
 	}
-	settings := measureSettings{runs: *runs, minimum: *minimum, startupX: *startupX, benches: strings.Split(*benchList, ","), sizeLimit: 1 << 30}
+	settings := measureSettings{runs: *runs, minimum: *minimum, startupX: *startupX, maximum: *maximum, benches: strings.Split(*benchList, ","), sizeLimit: 1 << 30}
 	forms, err := formsLoad(root, formNamesParse(*formList))
 	if err != nil {
 		return err
 	}
+	forms = formsSkip(forms, *skip)
 	expected, err := expectedLoad(root)
 	if err != nil {
 		return err
@@ -83,6 +87,10 @@ func measureCommand(root string, args []string) error {
 			target := settings.minimum
 			if floor := empty * time.Duration(settings.startupX); floor > target {
 				target = floor
+			}
+			if target > settings.maximum {
+				target = settings.maximum
+				record(run{Kind: "note", Form: f.label(), Pass: true, Note: fmt.Sprintf("start up %v, runs capped at %v, under %dx start up", empty, settings.maximum, settings.startupX)})
 			}
 			for _, bench := range settings.benches {
 				measureBench(f, bench, empty, target, settings, expected.want, record)
@@ -128,8 +136,14 @@ func measureBench(f form, bench string, empty, target time.Duration, settings me
 		if work < time.Millisecond {
 			work = time.Millisecond
 		}
+		// A JIT makes small runs a poor guide, so the size grows at most 10
+		// times a step, and 3 times once a run is a tenth of the target.
 		factor := float64(target-empty) * 1.15 / float64(work)
-		factor = min(max(factor, 1.5), 1000)
+		ceiling := 10.0
+		if total*10 >= target {
+			ceiling = 3
+		}
+		factor = min(max(factor, 1.2), ceiling)
 		size = min(int(float64(size)*factor)+1, settings.sizeLimit)
 	}
 	for i := 0; i < settings.runs; i++ {
@@ -190,4 +204,21 @@ func runsLoad(path string) ([]run, error) {
 		runs = append(runs, r)
 	}
 	return runs, nil
+}
+
+func formsSkip(forms []form, list string) []form {
+	if list == "" {
+		return forms
+	}
+	skipped := map[string]bool{}
+	for _, label := range strings.Split(list, ",") {
+		skipped[label] = true
+	}
+	var kept []form
+	for _, f := range forms {
+		if !skipped[f.label()] {
+			kept = append(kept, f)
+		}
+	}
+	return kept
 }

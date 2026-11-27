@@ -335,6 +335,19 @@ func reportCommand(root string, args []string) error {
 		}
 	}
 
+	var formNotes []string
+	for _, r := range runs {
+		if r.Kind == "note" && r.Bench == "" {
+			formNotes = append(formNotes, fmt.Sprintf("* %s: %s\n", r.Form, r.Note))
+		}
+	}
+	if len(formNotes) > 0 {
+		b.WriteString("\n## Notes\n\n")
+		for _, note := range formNotes {
+			b.WriteString(note)
+		}
+	}
+
 	b.WriteString("\n## Empty program\n\n| form | layout | start to exit | start to S |\n|---|---|---:|---:|\n")
 	keys := make([]string, 0, len(empty))
 	for key := range empty {

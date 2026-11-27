@@ -206,6 +206,10 @@ sequential, never in parallel.
 * A difference counts only when it is larger than the spread and the
   placement delta of both forms. The best of table marks it `sig yes`.
 
+The first results are in
+[results/2026-11-27](results/2026-11-27/results.md), with a summary in
+[notes.md](results/2026-11-27/notes.md).
+
 ## CI
 
 The workflow builds the forms whose tools install from apt (c, go, lua,

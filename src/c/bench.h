@@ -5,6 +5,10 @@
 #define FNV_OFFSET 14695981039346656037ULL
 #define FNV_PRIME 1099511628211ULL
 
+/* bench_zero is 0, but volatile, so a compiler cannot hoist the work of a
+   round out of the loop of rounds or fold a loop into a closed form. */
+extern volatile int32_t bench_zero;
+
 static inline uint64_t fnv(uint64_t h, uint64_t v) { return (h ^ v) * FNV_PRIME; }
 
 uint64_t bench_count(int64_t size, int *pass);

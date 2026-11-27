@@ -7,7 +7,7 @@ func benchCount(size int) (uint64, bool) {
 	for round := 0; round < size; round++ {
 		var sum int64
 		for i := int32(0); i < 1000000; i++ {
-			sum += int64(i)
+			sum += int64(i + zero())
 		}
 		hash = fnv(hash, uint64(sum))
 		pass = pass && sum == 499999500000

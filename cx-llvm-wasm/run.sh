@@ -17,7 +17,7 @@ module() {
 form_cmd() {
 	local file
 	file=$(cx_sized "$1" "$2" "$OUT/cx-sized") || return 1
-	module "$file" "$OUT/cx-llvm-wasm/$1-$2.wasm"
+	module "$file" "$OUT/cx-llvm-wasm/$(basename "$file" .cx).wasm"
 }
 form_cmd_empty() { module "$ROOT/src/cx/empty.cx" "$OUT/cx-llvm-wasm/empty.wasm"; }
 form_main "$@"

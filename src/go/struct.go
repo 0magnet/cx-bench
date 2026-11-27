@@ -16,7 +16,8 @@ func benchStruct(size int) (uint64, bool) {
 	}
 	for round := 0; round < size; round++ {
 		sum := int32(0)
-		for i := 0; i < 100; i++ {
+		top := 100 + zero()
+		for i := int32(0); i < top; i++ {
 			p := &points[i]
 			sum = sum + p.horizontal + p.vertical
 		}

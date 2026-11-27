@@ -15,7 +15,7 @@ func benchAckermann(size int) (uint64, bool) {
 	hash := uint64(fnvOffset)
 	pass := true
 	for round := 0; round < size; round++ {
-		result := ackermann(3, 5)
+		result := ackermann(3, 5+zero())
 		hash = fnv(hash, uint64(result))
 		pass = pass && result == 253
 	}

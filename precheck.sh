@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Lists every tool each form needs, the version found and what is missing.
+# a|b means either tool will do, the lua form runs each one installed.
 # Usage: precheck.sh [form...]. With forms named, it exits 1 when one of
 # them misses a tool. With none it lists every form and exits 0.
 set -u
@@ -13,7 +14,7 @@ declare -A NEEDS=(
 	[go-wasm]="go node"
 	[tinygo]="tinygo go"
 	[tinygo-wasm]="tinygo go node"
-	[lua]="lua5.4 lua5.5"
+	[lua]="lua5.4|lua5.5"
 	[luajit]="luajit"
 	[lua-wasm]="clang llvm-ar tinygo node curl sha256sum"
 	[gopher-lua]="go"
@@ -57,11 +58,18 @@ printf '%-13s %-10s %-8s %s\n' form tool status version
 for form in $ORDER; do
 	[[ -n $requested && " $requested " != *" $form "* ]] && continue
 	missing=0
-	for tool in ${NEEDS[$form]}; do
-		if path=$(tool_path "$tool"); then
-			printf '%-13s %-10s %-8s %s\n' "$form" "$tool" ok "$(tool_version "$tool" "$path")"
-		else
-			printf '%-13s %-10s %-8s %s\n' "$form" "$tool" MISSING "see $form/INSTALL.md"
+	for need in ${NEEDS[$form]}; do
+		found=0
+		for tool in ${need//|/ }; do
+			if path=$(tool_path "$tool"); then
+				printf '%-13s %-10s %-8s %s\n' "$form" "$tool" ok "$(tool_version "$tool" "$path")"
+				found=1
+			elif [[ $need == *"|"* ]]; then
+				printf '%-13s %-10s %-8s %s\n' "$form" "$tool" absent "one of ${need//|/ } is enough"
+			fi
+		done
+		if ((found == 0)); then
+			printf '%-13s %-10s %-8s %s\n' "$form" "$need" MISSING "see $form/INSTALL.md"
 			missing=1
 		fi
 	done

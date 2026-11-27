@@ -15,8 +15,8 @@ uint64_t bench_struct(int64_t size, int *pass) {
 		points[i].vertical = 2 * i;
 	}
 	for (int64_t round = 0; round < size; round++) {
-		int32_t sum = 0;
-		for (int i = 0; i < 100; i++) {
+		int32_t sum = 0, top = 100 + bench_zero;
+		for (int i = 0; i < top; i++) {
 			struct point *p = &points[i];
 			sum = sum + p->horizontal + p->vertical;
 		}

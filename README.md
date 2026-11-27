@@ -59,6 +59,16 @@ comes from the command line, so no compiler sees it at build time (except in
 CX, see below). Each round folds its result into an FNV-1a hash, and the
 program checks every round against the math and prints `<name> pass`.
 
+A round of fib, ackermann, factorialiter, factorialrec and struct is the same
+pure computation every time, so clang and TinyGo moved it out of the loop of
+rounds and ran it once, and LLVM turned the count loop into its closed form.
+These rounds add a zero the compiler cannot see as a constant: `fib(25 +
+zero)`, and `sum += i + zero` in count. It is a volatile in C, an atomic
+load in Go, a volatile load in TinyGo and a plain variable in the
+interpreters, which fold nothing. CX has no such value (see below), so
+cx-llvm still folds count. The report marks a form that is under a tenth of
+C on a benchmark as folded and leaves it out of the best of table.
+
 | # | name | one round |
 |---:|---|---|
 | 1 | count | sum 0 to 999,999 into an int64 |
@@ -127,9 +137,12 @@ these exist in the old loop only. So for the CX forms:
   empty CX program and splits the rest over the two passes. These phases are
   marked `est`.
 * There is no server mode and no `-time` flag.
+* The zero is a CX global, `var benchZero i32 = 0`. cx-llvm sees its
+  initial store, so LLVM still folds the count loop.
 
 Reading an argument, a clock and writing a byte to stderr from the vm would
-give CX the same protocol as the other languages.
+give CX the same protocol as the other languages, and an argument would
+also be the value LLVM cannot fold.
 
 ## Running
 

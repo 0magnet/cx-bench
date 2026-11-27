@@ -1,4 +1,8 @@
 -- Walks 100 points, tables of two fields, once per round.
+-- zero is the 0 the compiled forms read so no compiler folds a round, see
+-- README.md. It costs the same read here.
+local zero = 0
+
 return function(fnv, offset)
 	return function(size)
 		local h, ok = offset(), true
@@ -8,7 +12,7 @@ return function(fnv, offset)
 		end
 		for _ = 1, size do
 			local sum = 0
-			for i = 0, 99 do
+			for i = 0, 99 + zero do
 				local p = points[i]
 				sum = sum + p.horizontal + p.vertical
 			end

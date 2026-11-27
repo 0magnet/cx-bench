@@ -20,7 +20,7 @@ native() {
 form_cmd() {
 	local file
 	file=$(cx_sized "$1" "$2" "$OUT/cx-sized") || return 1
-	native "$file" "$OUT/cx-llvm/$LAYOUT/$1-$2"
+	native "$file" "$OUT/cx-llvm/$LAYOUT/$(basename "$file" .cx)"
 }
 form_cmd_empty() { native "$ROOT/src/cx/empty.cx" "$OUT/cx-llvm/$LAYOUT/empty"; }
 form_main "$@"

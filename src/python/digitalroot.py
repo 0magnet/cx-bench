@@ -1,5 +1,5 @@
 """Digital root and additive persistence of every n from 1 to 99,999 once
-per round. Each n folds root + 10 * persistence."""
+per round. Each n hashes root + 10 * persistence."""
 
 
 def digit_sum(n):

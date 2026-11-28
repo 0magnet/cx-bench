@@ -56,7 +56,7 @@ integers), and Python has its own.
 
 Each benchmark runs a fixed unit of work, a round, `size` times. The size
 comes from the command line, so no compiler sees it at build time (except in
-CX, see below). Each round folds its result into an FNV-1a hash, and the
+CX, see below). Each round mixes its result into an FNV-1a hash, and the
 program checks every round against the math and prints `<name> pass`.
 
 A round of fib, ackermann, factorialiter, factorialrec and struct is the same
@@ -65,9 +65,11 @@ rounds and ran it once, and LLVM turned the count loop into its closed form.
 These rounds add a zero the compiler cannot see as a constant: `fib(25 +
 zero)`, and `sum += i + zero` in count. It is a volatile in C, an atomic
 load in Go, a volatile load in TinyGo and a plain variable in the
-interpreters, which fold nothing. CX has no such value (see below), so
-cx-llvm still folds count. The report marks a form that is under a tenth of
-C on a benchmark as folded and leaves it out of the best of table.
+interpreters, which precompute nothing. CX has no such value (see below), so
+LLVM still computes the whole count loop at build time and removes it from
+cx-llvm. The report marks a form that is under a tenth of
+C on a benchmark as precomputed (the compiler worked out the result at build
+time and removed the loop) and leaves it out of the best of table.
 
 | # | name | one round |
 |---:|---|---|
@@ -138,11 +140,11 @@ these exist in the old loop only. So for the CX forms:
   marked `est`.
 * There is no server mode and no `-time` flag.
 * The zero is a CX global, `var benchZero i32 = 0`. cx-llvm sees its
-  initial store, so LLVM still folds the count loop.
+  initial store, so LLVM computes the count loop at build time.
 
 Reading an argument, a clock and writing a byte to stderr from the vm would
 give CX the same protocol as the other languages, and an argument would
-also be the value LLVM cannot fold.
+also be a value LLVM cannot compute at build time.
 
 ## Running
 
@@ -204,7 +206,7 @@ sequential, never in parallel.
   placement alone can move a hot loop by tens of percent.
 * The sweep is the whole run, start up included, per round. Falling then
   flat means the start up is amortized at the size used. A per round time
-  far below the other compiled forms means the work is folded away.
+  far below the other compiled forms means the compiler removed the work.
 * A difference counts only when it is larger than the spread and the
   placement delta of both forms. The best of table marks it `sig yes`.
 

@@ -7,7 +7,7 @@ package main
 // so run.sh writes the size here before it runs or builds the program.
 var benchSize i32 = 1
 
-// benchZero is the 0 the other compiled forms read so no compiler folds a
+// benchZero is the 0 the other compiled forms read so no compiler precomputes a
 // round, see README.md.
 var benchZero i32 = 0
 

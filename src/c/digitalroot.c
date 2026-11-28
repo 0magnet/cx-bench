@@ -8,7 +8,7 @@ static int32_t digit_sum(int32_t n) {
 }
 
 /* Digital root and additive persistence of every n from 1 to 99,999 once
-   per round. Each n folds root + 10 * persistence. */
+   per round. Each n hashes root + 10 * persistence. */
 uint64_t bench_digitalroot(int64_t size, int *pass) {
 	uint64_t hash = FNV_OFFSET;
 	int ok = 1;

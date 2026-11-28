@@ -6,7 +6,7 @@ Harness: linux/amd64, 8 logical CPUs, started 2026-11-27T01:38:19-06:00.
 
 Harness: linux/amd64, 8 logical CPUs, started 2026-11-27T02:47:16-06:00.
 
-Time per round is the time of the two passes over two times the size, from the phase markers. A form without markers (the CX forms) has it from the whole run less its empty program, marked est. A difference to C counts (sig yes) only when it is larger than the run to run spread and the placement delta of both forms. A form under a tenth of C on a benchmark is marked folded: its compiler skipped the work, and the best of table leaves it out.
+Time per round is the time of the two passes over two times the size, from the phase markers. A form without markers (the CX forms) has it from the whole run less its empty program, marked est. A difference to C counts (sig yes) only when it is larger than the run to run spread and the placement delta of both forms. A form under a tenth of C on a benchmark is marked precomputed: its compiler worked out the result at build time and removed the work, and the best of table leaves it out.
 
 ![best of chart](chart.png)
 
@@ -205,7 +205,7 @@ Sweep is the whole run, start up included, per round at size/8, /4, /2 and the s
 | cx-image | factorialrec | 73351 | 14.9 us est | 14.7 us | 15.5 us | 4.7 | 4.0 | 16.2 us | 15.0 us | 15.3 us | 15.0 us | - | - | - | 1.93-2.01 |
 | cx-image | structs | 70 | 17.7 ms est | 16.8 ms | 18.6 ms | 9.9 | 0.8 | 16.1 ms | 16.7 ms | 17.8 ms | 17.8 ms | - | - | - | 1.88-1.97 |
 | cx-image | structserialize | 82115 | 14.6 us est | 14.0 us | 14.9 us | 6.2 | 4.0 | 13.7 us | 16.3 us | 15.4 us | 14.5 us | - | - | - | 2.46-2.51 |
-| cx-llvm | count | 1073741824 | 1.16 ns est folded | 1.15 ns | 1.16 ns | 0.8 | 0.2 | 1.16 ns | 1.16 ns | 1.17 ns | 1.16 ns | - | - | - | 3.22-3.44 |
+| cx-llvm | count | 1073741824 | 1.16 ns est precomputed | 1.15 ns | 1.16 ns | 0.8 | 0.2 | 1.16 ns | 1.16 ns | 1.17 ns | 1.16 ns | - | - | - | 3.22-3.44 |
 | cx-llvm | fib | 2980 | 382.4 us est | 378.5 us | 393.9 us | 4.0 | 1.6 | 372.2 us | 376.2 us | 385.5 us | 385.0 us | - | - | - | 2.54-2.82 |
 | cx-llvm | array | 72532 | 15.3 us est | 15.2 us | 15.5 us | 1.5 | 0.1 | 15.7 us | 16.0 us | 15.3 us | 15.3 us | - | - | - | 2.22-2.34 |
 | cx-llvm | struct | 46199270 | 25 ns est | 24 ns | 25 ns | 3.2 | 5.1 | 24 ns | 25 ns | 24 ns | 25 ns | - | - | - | 2.01-2.09 |

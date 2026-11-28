@@ -27,9 +27,10 @@ desktop session beside the benchmarks, so the one minute load average was
   and factorialiter. It is slower than C beyond the noise on fib (1.19),
   ackermann (1.72), factorialrec (2.82), structs (1.18) and
   structserialize (4.75): the calls and the byte buffer cost more.
-* cx-llvm folds count: LLVM sees the zero of the CX program as a constant
-  (the vm subset has no input), so its round costs 1 ns. It is marked
-  folded and left out, and the best CX for count is cx-image, 34 ms a
+* cx-llvm count is precomputed: LLVM sees the zero of the CX program as a constant
+  (the vm subset has no input), computes the loop at build time and removes
+  it, so a round costs 1 ns. It is marked
+  precomputed and left out, and the best CX for count is cx-image, 34 ms a
   round, against 0.45 ms for C.
 * cx-vm and cx-image are 14 (primes) to 530 (struct) times C, and 4000
   times on structserialize. They are 1.2 to 6 times slower than Lua 5.4

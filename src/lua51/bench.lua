@@ -31,7 +31,7 @@ local function offset()
 	return { 0x25, 0x23, 0x22, 0x84, 0xe4, 0x9c, 0xf2, 0xcb }
 end
 
--- fnv folds one word from 0 to 2^53 into the hash h: XOR, then times the
+-- fnv mixes one word from 0 to 2^53 into the hash h: XOR, then times the
 -- prime 2^40 + 0x1b3 mod 2^64.
 local function fnv(h, v)
 	for i = 1, 8 do

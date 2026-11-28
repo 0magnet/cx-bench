@@ -9,7 +9,7 @@ func digitSum(n int32) int32 {
 }
 
 // benchDigitalRoot takes the digital root and additive persistence, base 10,
-// of every n from 1 to 99,999 once per round. Each n folds root + 10 *
+// of every n from 1 to 99,999 once per round. Each n hashes root + 10 *
 // persistence.
 func benchDigitalRoot(size int) (uint64, bool) {
 	hash := uint64(fnvOffset)

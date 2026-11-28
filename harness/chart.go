@@ -46,15 +46,15 @@ func chartWrite(path string, rows []chartRow, title string) error {
 			}
 		}
 	}
-	lowExp, highExp := math.Floor(math.Log10(low)), math.Ceil(math.Log10(high))
+	lowExp, highExp := math.Floor(math.Log2(low)), math.Ceil(math.Log2(high))
 	if highExp == lowExp {
 		highExp++
 	}
 	plotWidth := float64(width - left - right)
 	x := func(ratio float64) int {
-		return left + int((math.Log10(ratio)-lowExp)/(highExp-lowExp)*plotWidth)
+		return left + int((math.Log2(ratio)-lowExp)/(highExp-lowExp)*plotWidth)
 	}
-	text(img, 20, 28, title+": time per round relative to C, log scale (lower is faster)", chartText)
+	text(img, 20, 28, title+": time per round relative to C, log2 scale (lower is faster)", chartText)
 	legendX := 20
 	for i, key := range chartSeriesKey {
 		dot(img, legendX+6, 52, 5, chartSeries[i])
@@ -62,21 +62,17 @@ func chartWrite(path string, rows []chartRow, title string) error {
 		legendX += 30 + 8*len(key)
 	}
 	bottom := top + rowHeight*len(rows)
+	labelStep := math.Ceil((highExp - lowExp + 1) / 16)
 	for e := lowExp; e <= highExp; e++ {
-		for _, m := range []float64{1, 2, 5} {
-			ratio := m * math.Pow(10, e)
-			if math.Log10(ratio) > highExp+1e-9 {
-				continue
-			}
-			gx := x(ratio)
-			shade := chartGrid
-			if m == 1 {
-				shade = color.RGBA{0xc8, 0xc7, 0xc2, 0xff}
-				label := fmt.Sprintf("%gx", ratio)
-				text(img, gx-4*len(label), bottom+18, label, chartMuted)
-			}
-			fill(img, image.Rect(gx, top-6, gx+1, bottom), shade)
+		ratio := math.Pow(2, e)
+		gx := x(ratio)
+		shade := chartGrid
+		if math.Mod(e-lowExp, labelStep) == 0 || e == 0 {
+			shade = color.RGBA{0xc8, 0xc7, 0xc2, 0xff}
+			label := fmt.Sprintf("%gx", ratio)
+			text(img, gx-4*len(label), bottom+18, label, chartMuted)
 		}
+		fill(img, image.Rect(gx, top-6, gx+1, bottom), shade)
 	}
 	for i, row := range rows {
 		cy := top + rowHeight*i + rowHeight/2

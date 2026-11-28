@@ -14,7 +14,7 @@ local NAMES = { "count", "fib", "array", "struct", "memtest", "primes", "ackerma
 local FNV_OFFSET = 0xcbf29ce484222325 -- 14695981039346656037
 local FNV_PRIME = 1099511628211
 
--- fnv folds one 64 bit word. Lua integers wrap like a uint64.
+-- fnv mixes one 64 bit word. Lua integers wrap like a uint64.
 local function fnv(h, v)
 	return (h ~ v) * FNV_PRIME
 end

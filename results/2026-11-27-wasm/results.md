@@ -6,7 +6,7 @@ Harness: linux/amd64, 8 logical CPUs, started 2026-11-27T03:39:42-06:00.
 
 Harness: linux/amd64, 8 logical CPUs, started 2026-11-27T04:35:54-06:00.
 
-Time per round is the time of the two passes over two times the size, from the phase markers. A form without markers (the CX forms) has it from the whole run less its empty program, marked est. A difference to C counts (sig yes) only when it is larger than the run to run spread and the placement delta of both forms. A form under a tenth of C on a benchmark is marked folded: its compiler skipped the work, and the best of table leaves it out.
+Time per round is the time of the two passes over two times the size, from the phase markers. A form without markers (the CX forms) has it from the whole run less its empty program, marked est. A difference to C counts (sig yes) only when it is larger than the run to run spread and the placement delta of both forms. A form under a tenth of C on a benchmark is marked precomputed: its compiler worked out the result at build time and removed the work, and the best of table leaves it out.
 
 ![best of chart](chart.png)
 
@@ -184,8 +184,8 @@ Sweep is the whole run, start up included, per round at size/8, /4, /2 and the s
 | lua-wasm/turbofan | factorialrec | 420043 | 12.7 us | 12.5 us | 12.8 us | 2.7 | - | 17.7 us | 15.1 us | 13.9 us | 13.2 us | 12.5 us | 13.5 us | -0.2 | 2.01-2.24 |
 | lua-wasm/turbofan | structs | 534 | 10.3 ms | 10.3 ms | 10.4 ms | 1.2 | - | 14.8 ms | 12.9 ms | 11.8 ms | 10.8 ms | 10.4 ms | 10.3 ms | -0.4 | 2.13-2.39 |
 | lua-wasm/turbofan | structserialize | 652637 | 8.2 us | 8.1 us | 8.2 us | 1.5 | - | 11.2 us | 9.5 us | 9.0 us | 8.5 us | 8.0 us | 8.0 us | -0.2 | 2.72-3.09 |
-| cx-llvm-wasm | count | 1073741824 | 1.36 ns est folded | 1.36 ns | 1.37 ns | 0.5 | - | 1.56 ns | 1.47 ns | 1.41 ns | 1.39 ns | - | - | - | 1.82-2.24 |
-| cx-llvm-wasm | count | | size limit reached below the target time, the work is folded | | | | | | | | | | | | |
+| cx-llvm-wasm | count | 1073741824 | 1.36 ns est precomputed | 1.36 ns | 1.37 ns | 0.5 | - | 1.56 ns | 1.47 ns | 1.41 ns | 1.39 ns | - | - | - | 1.82-2.24 |
+| cx-llvm-wasm | count | | size limit reached below the target time, the work is precomputed | | | | | | | | | | | | |
 | cx-llvm-wasm | fib | 2989 | 1.1 ms est | 1.1 ms | 1.1 ms | 1.5 | - | 1.2 ms | 1.2 ms | 1.1 ms | 1.1 ms | - | - | - | 2.04-2.25 |
 | cx-llvm-wasm | array | 155125 | 21.5 us est | 21.0 us | 21.7 us | 3.6 | - | 22.2 us | 21.7 us | 21.8 us | 21.6 us | - | - | - | 3.80-3.89 |
 | cx-llvm-wasm | struct | 21524244 | 154 ns est | 154 ns | 156 ns | 1.2 | - | 167 ns | 156 ns | 156 ns | 156 ns | - | - | - | 3.59-3.73 |
@@ -197,8 +197,8 @@ Sweep is the whole run, start up included, per round at size/8, /4, /2 and the s
 | cx-llvm-wasm | factorialrec | 7544663 | 443 ns est | 442 ns | 444 ns | 0.3 | - | 490 ns | 473 ns | 456 ns | 447 ns | - | - | - | 2.92-3.27 |
 | cx-llvm-wasm | structs | 7952 | 410.0 us est | 406.1 us | 431.5 us | 6.2 | - | 454.3 us | 434.8 us | 415.3 us | 419.6 us | - | - | - | 3.00-3.58 |
 | cx-llvm-wasm | structserialize | 145881591 | 23 ns est | 23 ns | 23 ns | 2.2 | - | 25 ns | 25 ns | 23 ns | 23 ns | - | - | - | 2.50-2.83 |
-| cx-llvm-wasm/turbofan | count | 1073741824 | 1.17 ns est folded | 1.17 ns | 1.17 ns | 0.8 | - | 1.70 ns | 1.49 ns | 1.31 ns | 1.23 ns | - | - | - | 2.20-2.34 |
-| cx-llvm-wasm/turbofan | count | | size limit reached below the target time, the work is folded | | | | | | | | | | | | |
+| cx-llvm-wasm/turbofan | count | 1073741824 | 1.17 ns est precomputed | 1.17 ns | 1.17 ns | 0.8 | - | 1.70 ns | 1.49 ns | 1.31 ns | 1.23 ns | - | - | - | 2.20-2.34 |
+| cx-llvm-wasm/turbofan | count | | size limit reached below the target time, the work is precomputed | | | | | | | | | | | | |
 | cx-llvm-wasm/turbofan | fib | 5398 | 1.0 ms est | 1.0 ms | 1.0 ms | 1.7 | - | 1.1 ms | 1.1 ms | 1.0 ms | 1.0 ms | - | - | - | 2.23-2.70 |
 | cx-llvm-wasm/turbofan | array | 333334 | 15.0 us est | 14.9 us | 15.2 us | 1.4 | - | 16.7 us | 16.2 us | 16.0 us | 15.3 us | - | - | - | 1.53-1.74 |
 | cx-llvm-wasm/turbofan | struct | 71678894 | 81 ns est | 79 ns | 81 ns | 2.5 | - | 87 ns | 84 ns | 82 ns | 82 ns | - | - | - | 1.46-1.71 |

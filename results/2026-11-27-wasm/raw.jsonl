@@ -1509,7 +1509,7 @@
 {"kind":"size","form":"cx-llvm-wasm","bench":"count","layout":"a","size":11111111,"loadavg":2.05,"total_ns":101054597,"hash":"3433010529036366023","pass":true}
 {"kind":"size","form":"cx-llvm-wasm","bench":"count","layout":"a","size":111111111,"loadavg":1.97,"total_ns":353670576,"hash":"14008108367876842695","pass":true}
 {"kind":"size","form":"cx-llvm-wasm","bench":"count","layout":"a","size":1073741824,"loadavg":1.89,"total_ns":2983991356,"hash":"2182966131690709797","pass":true}
-{"kind":"note","form":"cx-llvm-wasm","bench":"count","size":1073741824,"loadavg":0,"total_ns":0,"pass":true,"note":"size limit reached below the target time, the work is folded"}
+{"kind":"note","form":"cx-llvm-wasm","bench":"count","size":1073741824,"loadavg":0,"total_ns":0,"pass":true,"note":"size limit reached below the target time, the work is precomputed"}
 {"kind":"run","form":"cx-llvm-wasm","bench":"count","layout":"a","size":1073741824,"loadavg":1.82,"total_ns":2979093069,"hash":"2182966131690709797","pass":true}
 {"kind":"run","form":"cx-llvm-wasm","bench":"count","layout":"a","size":1073741824,"loadavg":1.82,"total_ns":2982181927,"hash":"2182966131690709797","pass":true}
 {"kind":"run","form":"cx-llvm-wasm","bench":"count","layout":"a","size":1073741824,"loadavg":2.24,"total_ns":2992655532,"hash":"2182966131690709797","pass":true}
@@ -1675,7 +1675,7 @@
 {"kind":"size","form":"cx-llvm-wasm/turbofan","bench":"count","layout":"a","size":11111111,"loadavg":2.31,"total_ns":169535337,"hash":"3433010529036366023","pass":true}
 {"kind":"size","form":"cx-llvm-wasm/turbofan","bench":"count","layout":"a","size":111111111,"loadavg":2.31,"total_ns":402535702,"hash":"14008108367876842695","pass":true}
 {"kind":"size","form":"cx-llvm-wasm/turbofan","bench":"count","layout":"a","size":1073741824,"loadavg":2.31,"total_ns":2631936832,"hash":"2182966131690709797","pass":true}
-{"kind":"note","form":"cx-llvm-wasm/turbofan","bench":"count","size":1073741824,"loadavg":0,"total_ns":0,"pass":true,"note":"size limit reached below the target time, the work is folded"}
+{"kind":"note","form":"cx-llvm-wasm/turbofan","bench":"count","size":1073741824,"loadavg":0,"total_ns":0,"pass":true,"note":"size limit reached below the target time, the work is precomputed"}
 {"kind":"run","form":"cx-llvm-wasm/turbofan","bench":"count","layout":"a","size":1073741824,"loadavg":2.2,"total_ns":2642346242,"hash":"2182966131690709797","pass":true}
 {"kind":"run","form":"cx-llvm-wasm/turbofan","bench":"count","layout":"a","size":1073741824,"loadavg":2.2,"total_ns":2662726016,"hash":"2182966131690709797","pass":true}
 {"kind":"run","form":"cx-llvm-wasm/turbofan","bench":"count","layout":"a","size":1073741824,"loadavg":2.34,"total_ns":2647394536,"hash":"2182966131690709797","pass":true}

@@ -1,6 +1,6 @@
 -- n! for n 0 to 20 with a loop once per round. 20! fits a signed 64 bit
 -- integer.
--- zero is the 0 the compiled forms read so no compiler folds a round, see
+-- zero is the 0 the compiled forms read so no compiler precomputes a round, see
 -- README.md. It costs the same read here.
 local zero = 0
 

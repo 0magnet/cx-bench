@@ -27,7 +27,7 @@ type benchStats struct {
 	loadMin     float64
 	loadMax     float64
 	note        string
-	folded      bool // under a tenth of C: the compiler skipped the work
+	precomputed bool // under a tenth of C: the compiler removed the work
 }
 
 // reportGroups are the four columns of the best of table. A form counts in
@@ -165,7 +165,7 @@ func best(stats map[string]map[string]*benchStats, forms []string, group []strin
 			member = member || formBase(label) == name
 		}
 		s := stats[label][bench]
-		if !member || s == nil || len(s.nsRound) == 0 || s.folded {
+		if !member || s == nil || len(s.nsRound) == 0 || s.precomputed {
 			continue
 		}
 		if found == nil || s.median < found.median {
@@ -217,7 +217,7 @@ func reportCommand(root string, args []string) error {
 		return err
 	}
 	stats, forms, empty := statsCompute(runs)
-	foldedMark(stats, forms)
+	precomputedMark(stats, forms)
 	var b strings.Builder
 	fmt.Fprintf(&b, "# %s\n\n", *title)
 	if *machine != "" {
@@ -231,7 +231,7 @@ func reportCommand(root string, args []string) error {
 	b.WriteString("Time per round is the time of the two passes over two times the size, from the phase markers. ")
 	b.WriteString("A form without markers (the CX forms) has it from the whole run less its empty program, marked est. ")
 	b.WriteString("A difference to C counts (sig yes) only when it is larger than the run to run spread and the placement delta of both forms. ")
-	b.WriteString("A form under a tenth of C on a benchmark is marked folded: its compiler skipped the work, and the best of table leaves it out.\n\n")
+	b.WriteString("A form under a tenth of C on a benchmark is marked precomputed: its compiler worked out the result at build time and removed the work, and the best of table leaves it out.\n\n")
 	b.WriteString("![best of chart](chart.png)\n\n")
 
 	b.WriteString("## Best of each language, per benchmark\n\n")
@@ -306,8 +306,8 @@ func reportCommand(root string, args []string) error {
 			if s.estimated {
 				est = " est"
 			}
-			if s.folded {
-				est += " folded"
+			if s.precomputed {
+				est += " precomputed"
 			}
 			fmt.Fprintf(&b, "| %s | %s | %d | %s%s | %s | %s | %s | %s |", label, bench, s.size, formatNs(s.median), est,
 				formatNs(sorted[0]), formatNs(sorted[len(sorted)-1]), formatPercent(s.spread), formatPercent(s.placement))
@@ -404,11 +404,11 @@ func yesNo(value bool) string {
 	return "no"
 }
 
-// foldedMark marks a form whose time per round is under a tenth of C's on
+// precomputedMark marks a form whose time per round is under a tenth of C's on
 // the same benchmark: no form does the work ten times faster than clang
-// -O2, so the compiler skipped it (cx-llvm folds count, as CX has no value
+// -O2, so the compiler removed it (cx-llvm precomputes count, as CX has no value
 // a compiler cannot see). The best of table leaves such a form out.
-func foldedMark(stats map[string]map[string]*benchStats, forms []string) {
+func precomputedMark(stats map[string]map[string]*benchStats, forms []string) {
 	for _, label := range forms {
 		reference := "c"
 		if strings.HasSuffix(formBase(label), "-wasm") {
@@ -420,7 +420,7 @@ func foldedMark(stats map[string]map[string]*benchStats, forms []string) {
 		for bench, s := range stats[label] {
 			c := stats[reference][bench]
 			if c != nil && len(c.nsRound) > 0 && len(s.nsRound) > 0 && label != reference && s.median < c.median/10 {
-				s.folded = true
+				s.precomputed = true
 			}
 		}
 	}

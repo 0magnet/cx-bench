@@ -129,7 +129,7 @@ func measureBench(f form, bench string, empty, target time.Duration, settings me
 			break
 		}
 		if size >= settings.sizeLimit {
-			record(run{Kind: "note", Form: f.label(), Bench: bench, Size: size, Pass: true, Note: "size limit reached below the target time, the work is folded"})
+			record(run{Kind: "note", Form: f.label(), Bench: bench, Size: size, Pass: true, Note: "size limit reached below the target time, the work is precomputed"})
 			break
 		}
 		work := total - empty

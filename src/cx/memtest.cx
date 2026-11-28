@@ -2,7 +2,7 @@ package main
 
 // A memtest86 style test of a 4 MiB ui32 array once per round: address in
 // address, walking ones over the first 64 Ki words and moving inversions with
-// four patterns. Each test folds its mismatch count and the sum it read.
+// four patterns. Each test hashes its mismatch count and the sum it read.
 
 // benchSize is the number of rounds. The vm subset of CX reads no arguments,
 // so run.sh writes the size here before it runs or builds the program.

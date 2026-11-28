@@ -1,6 +1,6 @@
 """Walks 100 points, objects of two fields, once per round."""
 
-# zero is the 0 the compiled forms read so no compiler folds a round, see
+# zero is the 0 the compiled forms read so no compiler precomputes a round, see
 # README.md. It costs the same read here.
 zero = 0
 

@@ -9,7 +9,7 @@ const (
 
 func fnv(hash, value uint64) uint64 { return (hash ^ value) * fnvPrime }
 
-// hashRound returns the words one round of a benchmark folds, from the
+// hashRound returns the words one round of a benchmark hashes, from the
 // math rather than from running it: closed forms, and for digitalroot the
 // root and persistence of each n found by summing decimal digits.
 func hashRound(bench string, round uint64) []uint64 {
@@ -93,7 +93,7 @@ func digitalRootWords() []uint64 {
 }
 
 // hashCompute returns the hash of run(size), one pass of size rounds, in
-// size times the words of a round folds and none of the work.
+// size times the words of a round hashes and none of the work.
 func hashCompute(bench string, size int) uint64 {
 	hash := uint64(fnvOffset)
 	roundDependent := bench == "structs" || bench == "structserialize"

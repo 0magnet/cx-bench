@@ -1,5 +1,5 @@
 -- Digital root and additive persistence of every n from 1 to 99,999 once per
--- round. Each n folds root + 10 * persistence.
+-- round. Each n hashes root + 10 * persistence.
 return function(fnv, offset)
 	local function digitSum(n)
 		local sum = 0

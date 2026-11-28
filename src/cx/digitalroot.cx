@@ -1,7 +1,7 @@
 package main
 
 // The digital root and additive persistence, base 10, of every n from 1 to
-// 99,999 once per round. Each n folds root + 10 * persistence.
+// 99,999 once per round. Each n hashes root + 10 * persistence.
 
 // benchSize is the number of rounds. The vm subset of CX reads no arguments,
 // so run.sh writes the size here before it runs or builds the program.

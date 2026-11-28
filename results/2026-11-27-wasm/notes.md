@@ -28,7 +28,7 @@ Notes of `results.md` list them, and their Load percent shows it.
 * cx-llvm-wasm under TurboFan is within 7 percent of C wasm on array,
   memtest, primes, digitalroot, factorialiter and structs, and 2.8 to 3.9
   times it on fib, ackermann, factorialrec and structserialize, the same
-  pattern as native. It folds count, as cx-llvm does.
+  pattern as native. Its count is precomputed at build time, as in cx-llvm.
 * cx-wasm, cx's own vm in cx.wasm, is 60 (primes) to 9300
   (structserialize) times C wasm, 300 to 800 times on most (fib 130 ms a
   round against 0.34 ms), and it starts in 0.5 s, or
